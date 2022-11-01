@@ -1,5 +1,5 @@
 # Obsidian Weather Generator
-Original creator: https://github.com/Syrkres/templates/tree/main/WeatherGenerator
+Spiritual continuation of: https://github.com/Syrkres/templates/tree/main/WeatherGenerator
 
 This plugin will allow the user to create a markdown populated with weather data.
 The user will provide the plugin with as much data as they want, and the plugin will compute anything missing, within the parameters of the supplied data.
