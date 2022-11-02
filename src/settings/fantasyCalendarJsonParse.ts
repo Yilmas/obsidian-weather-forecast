@@ -1,4 +1,5 @@
 import { Notice, Setting, TextComponent } from 'obsidian';
+import { I_SeasonMatch } from 'settings';
 import WeatherCalendarSetting from './weatherGeneratorSetting';
 
 export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSetting {
@@ -29,13 +30,26 @@ export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSett
                 try {
                     const {static_data: {seasons}} = JSON.parse(await files[0].text());
 
-                    console.log(seasons);
-
                     new Notice('Parse in progress...');
-                    //setPath(newPath);
+
                     this.plugin.getSettings().fantasyCalendarJson = seasons;
-                    await this.plugin.saveWeatherGeneratorData();
+
+                    this.plugin.getSettings().fantasyCalendarSeasons.length = 0;
+
+                    for (let i = 0; i < seasons.data.length; i++) {
+                        const season: I_SeasonMatch = {
+                            fcSeason: seasons.data[i].name,
+                            ref: ""
+                        };
+
+                        this.plugin.getSettings().fantasyCalendarSeasons?.push(season);
+                    }
+
                     new Notice('...parsed successfully');
+
+                    await this.plugin.saveWeatherGeneratorData();
+
+                    new Notice('Saved changes')
                 } catch (e) {
                     new Notice(
                         `There was an error while importing the calendar${

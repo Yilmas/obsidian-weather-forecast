@@ -1,6 +1,7 @@
 import { App, PluginSettingTab } from 'obsidian';
 import WeatherGenerator from '../main';
 import FantasyCalendarJsonParseSetting from './fantasyCalendarJsonParse';
+import FantasyCalendarSeasonSetting from './fantasyCalendarSeason';
 import WeatherGeneratorShowFormulaSetting from './weatherGeneratorShowFormula';
 
 export class WeatherGeneratorSettingTab extends PluginSettingTab {
@@ -15,10 +16,11 @@ export class WeatherGeneratorSettingTab extends PluginSettingTab {
         const { plugin, containerEl, app } = this;
         containerEl.empty();
 
-        containerEl.createEl('h2', {text: 'Weather Generator' });
+        containerEl.createEl('h3', {text: 'Weather Generator' });
 		new WeatherGeneratorShowFormulaSetting(plugin, containerEl).display();
 
-        containerEl.createEl('h3', {text: 'Fantasy Calendar' });
+        containerEl.createEl('h2', {text: 'Fantasy Calendar' });
         new FantasyCalendarJsonParseSetting(plugin, containerEl).display();
+		new FantasyCalendarSeasonSetting(plugin, containerEl).display();
 	}
 }

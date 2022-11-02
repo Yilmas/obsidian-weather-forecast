@@ -20,7 +20,6 @@ export default class WeatherGenerator extends Plugin {
 	async onload() {
 		console.log(`Weather Generator v${this.manifest.version} loaded.`);
 		await this.loadWeatherGeneratorData();
-		//setPath(this.getSettings().fantasyCalendarJsonPath);
 
 		if (app.workspace.on("fantasy-calendars-settings-loaded", () => {
 			hasFantasyCalendar = true;
@@ -48,7 +47,6 @@ export default class WeatherGenerator extends Plugin {
 		//
 		// Start WEATHER GEN
 		//
-		console.log(wgData);
 		this.registerMarkdownPostProcessor(
 			async (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
 				let nodeList = el.querySelectorAll("code");
@@ -131,7 +129,7 @@ export default class WeatherGenerator extends Plugin {
 								// generate tempreg, based on temp and season/location temp_low and temp_high if available
 							}
 
-							console.log(wgData);
+							//console.log(wgData);
 						} catch (ex) {
 							console.error(ex);
 						}
