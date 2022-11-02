@@ -39,7 +39,7 @@ export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSett
                     for (let i = 0; i < seasons.data.length; i++) {
                         const season: I_SeasonMatch = {
                             fcSeason: seasons.data[i].name,
-                            ref: ""
+                            wgSeason: ""
                         };
 
                         this.plugin.getSettings().fantasyCalendarSeasons?.push(season);

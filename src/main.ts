@@ -1,5 +1,5 @@
 import { App, Editor, EventRef, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, TFile } from 'obsidian';
-import { DEFAULT_SETTINGS, WeatherGeneratorSettings, wgData } from './settings';
+import { DEFAULT_SETTINGS, WeatherGeneratorSettings, wgData, wgWeatherData } from './settings';
 import { WeatherGeneratorSettingTab } from './settings/index';
 
 // declare module "obsidian" {
@@ -12,34 +12,30 @@ import { WeatherGeneratorSettingTab } from './settings/index';
 // 	}
 // }
 
-let hasFantasyCalendar = false;
-
 export default class WeatherGenerator extends Plugin {
 	private data: Record<string, boolean | string | WeatherGeneratorSettings>;
+	public hasFc: boolean;
+
 
 	async onload() {
 		console.log(`Weather Generator v${this.manifest.version} loaded.`);
 		await this.loadWeatherGeneratorData();
 
+		// if (app.plugins.getPlugin("fantasy-calendar")){
+		// 	app.plugins.getPlugin("fantasy-calendar").onSettingsLoad(() => {
+		// 		console.log("FC Enabled?")
+		// 	});
+		// }
+		// if(Object.keys(this.app.plugins.plugins).includes("fantasy-calendar")) {
+		// 	console.log("FC Enabled 2nd time")
+		// }
+
 		if (app.workspace.on("fantasy-calendars-settings-loaded", () => {
-			hasFantasyCalendar = true;
+			this.hasFc = true;
 		})) { }
-
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('cloud', 'Weather Generator', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			if (hasFantasyCalendar) {
-				
-
-				console.log(FantasyCalendarAPI.getHelper().currentDate + " - " + this.getCurrentSeason().name);
-				console.log(this.getCurrentSeason());
-			}
-			else {
-				new Notice("Fantasy Calendar isn't loaded");
-			}
-		});
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass('my-plugin-ribbon-class');
+		else {
+			this.hasFc = false;
+		}
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new WeatherGeneratorSettingTab(this.app, this));
@@ -50,8 +46,9 @@ export default class WeatherGenerator extends Plugin {
 		this.registerMarkdownPostProcessor(
 			async (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
 				let nodeList = el.querySelectorAll("code");
+
 				console.log("Markdown Processor Started");
-				console.log("Is FC Enabled: " + hasFantasyCalendar)
+				console.log("Is FC enabled and loaded: " + this.hasFc);
 
 				if (!nodeList.length) return;
 
@@ -65,12 +62,33 @@ export default class WeatherGenerator extends Plugin {
 				let fileContent: string[];
 				let weatherFound: boolean = false;
 
-				for (let index = 0; index < nodeList.length; index++) {
-					const node = nodeList[index];
+				for (let i = 0; i < nodeList.length; i++) {
+					const node = nodeList[i];
 
 					if (/weather-gen:/.test(node.innerText) && info) {
 						try {
+							const wgDataTemp = {
+								wgSeason: "",
+								fcSeason: "",
+								day: {
+									weather: "",
+									wind: "",
+									temp: "",
+									tempreg: ""
+								},
+								night: {
+									weather: "",
+									wind: "",
+									temp: "",
+									tempreg: ""
+								}
+							};
+
 							const weatherArgs = node.innerText.split('--');
+							
+							// console.log("Weather data INITIAL");
+							// console.log(wgDataTemp);
+
 
 							for (let index = 0; index < weatherArgs.length; index++) {
 								const arg = weatherArgs[index];
@@ -78,58 +96,85 @@ export default class WeatherGenerator extends Plugin {
 
 								if(!item) continue;
 
-								if(item[1] === "season") wgData.season = item[2].trimEnd();
-								else if (item[1] === "weather") wgData.day.weather = item[2].trimEnd();
-								else if (item[1] === "wind") wgData.day.wind = item[2].trimEnd();
-								else if (item[1] === "temp") wgData.day.temp = item[2].trimEnd();
-								else if (item[1] === "tempreg") wgData.day.tempreg = item[2].trimEnd();
-								else if (item[1] === "nweather") wgData.night.weather = item[2].trimEnd();
-								else if (item[1] === "nwind") wgData.night.wind = item[2].trimEnd();
-								else if (item[1] === "ntemp") wgData.night.temp = item[2].trimEnd();
-								else if (item[1] === "ntempreg") wgData.night.tempreg = item[2].trimEnd();
+								if(item[1] === "season") wgDataTemp.wgSeason = item[2].trimEnd();
+								else if (item[1] === "weather") wgDataTemp.day.weather = item[2].trimEnd();
+								else if (item[1] === "wind") wgDataTemp.day.wind = item[2].trimEnd();
+								else if (item[1] === "temp") wgDataTemp.day.temp = item[2].trimEnd();
+								else if (item[1] === "tempreg") wgDataTemp.day.tempreg = item[2].trimEnd();
+								else if (item[1] === "nweather") wgDataTemp.night.weather = item[2].trimEnd();
+								else if (item[1] === "nwind") wgDataTemp.night.wind = item[2].trimEnd();
+								else if (item[1] === "ntemp") wgDataTemp.night.temp = item[2].trimEnd();
+								else if (item[1] === "ntempreg") wgDataTemp.night.tempreg = item[2].trimEnd();
 							}
-
 							
-							if(!wgData.season) {
-								if(hasFantasyCalendar) wgData.season = this.getCurrentSeason().name;
+							console.log("Weather data BEFORE season");
+							console.log(wgDataTemp);
+							
+							if(!wgDataTemp.wgSeason) {
+								if (this.hasFc) {
+									wgDataTemp.fcSeason = this.getCurrentSeason().name;
+									const postIndex = this.getSettings().fantasyCalendarSeasons.findIndex(x => x.fcSeason == wgDataTemp.fcSeason);
+									wgDataTemp.wgSeason = this.getSettings().fantasyCalendarSeasons[postIndex].wgSeason;
+								}
 								else {
 									new Notice("You must define a season using --season or make use of Fantasy Calendar");
 								}
 							}
+							
+							console.log("Weather data AFTER season");
+							console.log(wgDataTemp);
 
-							if(!wgData.day.weather) {
+							switch(wgDataTemp.wgSeason) {
+								case "wgWinter":
+									this.computeWinterWeatherData();
+									break;
+								case "wgSpring":
+									this.computeSpringWeatherData();
+									break;
+								case "wgSummer":
+									this.computeSummerWeatherData();
+									break;
+								case "wgFall":
+									this.computeFallWeatherData();
+									break;
+								default:
+									//new Notice("Season not recognized!")
+									console.log("Season not recognized!")
+									break;
+							}
+
+							if(!wgDataTemp.day.weather) {
 								// generate weather, based on season if available
 							}
 
-							if(!wgData.day.wind) {
+							if(!wgDataTemp.day.wind) {
 								// generate wind, based on weather and then season if available
 							}
 
-							if(!wgData.day.temp) {
+							if(!wgDataTemp.day.temp) {
 								// generate temp, based on weather then wind then season if available
 							}
 							
-							if(!wgData.day.tempreg) {
+							if(!wgDataTemp.day.tempreg) {
 								// generate tempreg, based on temp and season/location temp_low and temp_high if available
 							}
 							
-							if(!wgData.night.weather) {
+							if(!wgDataTemp.night.weather) {
 								// generate weather, based on season if available
 							}
 							
-							if(!wgData.night.wind) {
+							if(!wgDataTemp.night.wind) {
 								// generate wind, based on wind and then season if available
 							}
 							
-							if(!wgData.night.temp) {
+							if(!wgDataTemp.night.temp) {
 								// generate temp, based on weather then wind then season if available
 							}
 							
-							if(!wgData.night.tempreg) {
+							if(!wgDataTemp.night.tempreg) {
 								// generate tempreg, based on temp and season/location temp_low and temp_high if available
 							}
 
-							//console.log(wgData);
 						} catch (ex) {
 							console.error(ex);
 						}
@@ -139,6 +184,13 @@ export default class WeatherGenerator extends Plugin {
 		)
 	}
 
+	onLayoutReady() {
+		console.log("onLayoutReady");
+		if (app.plugins.getPlugin("fantasy-calendar")) {// checks for existance; all plugins are initialized in onLayoutReady
+			console.log(app.plugins.getPlugin("fantasy-calendar"));
+		}
+	}
+
 	capitalizeWords(arr) {
 		return arr.map(element => {
 			return element.charAt(0).toUpperCase() + element.slice(1).toLowerCase();
@@ -146,27 +198,45 @@ export default class WeatherGenerator extends Plugin {
 	}
 
 	getCurrentSeason() {
-		if (hasFantasyCalendar) {
-			const date = FantasyCalendarAPI.getHelper().current;
-			const seasons = this.getSettings().fantasyCalendarJson?.data;
+		const date = FantasyCalendarAPI.getHelper().current;
+		const seasons = this.getSettings().fantasyCalendarJson?.data;
 
-			if (!seasons) return;
+		if (!seasons) return;
 
-			// A day is within a given season if DayOfYear - DaysOfSeason =< 0, iterated through each season.
-			let remainingDays = FantasyCalendarAPI.getHelper().dayNumberForDate(date);
-			let currentSeason;
-			seasons.some(season => {
-				remainingDays = remainingDays - season.length;
-				
-				if (remainingDays <= 0) {
-					currentSeason = season;
-					return true;
-				}
-				return false;
-			})
+		// A day is within a given season if DayOfYear - DaysOfSeason =< 0, iterated through each season.
+		let remainingDays = FantasyCalendarAPI.getHelper().dayNumberForDate(date);
+		let currentSeason;
+		seasons.some(season => {
+			remainingDays = remainingDays - season.length;
+			
+			if (remainingDays <= 0) {
+				currentSeason = season;
+				return true;
+			}
+			return false;
+		})
 
-			return currentSeason;
-		}
+		return currentSeason;
+	}
+
+	computeWinterWeatherData() {
+		// Generate weather data for Winter
+		console.log("Generating weather data for: \"Winter\"");
+	}
+
+	computeSpringWeatherData() {
+		// Generate weather data for Spring
+		console.log("Generating weather data for: \"Spring\"");
+	}
+
+	computeSummerWeatherData() {
+		// Generate weather data for Summer
+		console.log("Generating weather data for: \"Summer\"");
+	}
+
+	computeFallWeatherData() {
+		// Generate weather data for Fall
+		console.log("Generating weather data for: \"Fall\"");
 	}
 
 	onunload() {

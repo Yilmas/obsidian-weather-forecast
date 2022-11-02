@@ -23,14 +23,14 @@ export default class FantasyCalendarSeasonSetting extends WeatherCalendarSetting
                 .setDesc('What does this season most commonly resemble?')
                 .addDropdown((d) => {
                     d.addOption("none", "Please select a default");
-                    d.addOption("spring", "Spring");
-                    d.addOption("summer", "Summer");
-                    d.addOption("fall", "Fall / Autumn");
-                    d.addOption("winter", "Winter");
-                    d.setValue(this.plugin.getSettings().fantasyCalendarSeasons[preIndex].ref);
+                    d.addOption("wgSpring", "Spring");
+                    d.addOption("wgSummer", "Summer");
+                    d.addOption("wgFall", "Fall / Autumn");
+                    d.addOption("wgWinter", "Winter");
+                    d.setValue(this.plugin.getSettings().fantasyCalendarSeasons[preIndex].wgSeason);
                     d.onChange(async (v) => {
                         const postIndex = this.plugin.getSettings().fantasyCalendarSeasons.findIndex(x => x.fcSeason == fcSeason.name);
-                        this.plugin.getSettings().fantasyCalendarSeasons[postIndex].ref = v;
+                        this.plugin.getSettings().fantasyCalendarSeasons[postIndex].wgSeason = v;
                         
                         await this.plugin.saveWeatherGeneratorData();
                     });

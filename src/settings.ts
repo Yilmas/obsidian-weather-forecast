@@ -6,7 +6,7 @@ export interface I_fcJson {
 
 export interface I_SeasonMatch {
 	fcSeason: string;
-	ref: string;
+	wgSeason: string;
 }
 
 export interface WeatherGeneratorSettings {
@@ -21,8 +21,9 @@ export const DEFAULT_SETTINGS: WeatherGeneratorSettings = {
 	wgShowFormula: false
 }
 
-export let wgData = {
-	season: "",
+export const wgData = {
+	wgSeason: "",
+	fcSeason: "",
 	day: {
 		weather: "",
 		wind: "",
