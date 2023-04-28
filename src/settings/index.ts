@@ -3,6 +3,7 @@ import WeatherGenerator from '../main';
 import FantasyCalendarJsonParseSetting from './fantasyCalendarJsonParse';
 import FantasyCalendarSeasonSetting from './fantasyCalendarSeason';
 import WeatherGeneratorShowFormulaSetting from './weatherGeneratorShowFormula';
+import WeatherGeneratorDebugSetting from './weatherGeneratorDebug';
 
 export class WeatherGeneratorSettingTab extends PluginSettingTab {
 	private plugin: WeatherGenerator;
@@ -17,6 +18,7 @@ export class WeatherGeneratorSettingTab extends PluginSettingTab {
         containerEl.empty();
 
         containerEl.createEl('h3', {text: 'Weather Generator' });
+		new WeatherGeneratorDebugSetting(plugin, containerEl).display();
 		new WeatherGeneratorShowFormulaSetting(plugin, containerEl).display();
 
         containerEl.createEl('h2', {text: 'Fantasy Calendar' });

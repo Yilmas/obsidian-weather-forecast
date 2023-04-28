@@ -12,7 +12,7 @@ Below you can see the plugins I recommend to get the full experience of this plu
 - Templater (Alternate ways to generate weather data)
 
 ## Fantasy Calendar
-If you use fantasy-calendar.com and/or Fantasy Calendar by Jeremy Valentine, this plugin will have options to load in data from both to help make the weather be more realistic.
+If you use fantasy-calendar.com and/or Fantasy Calendar by Jeremy Valentine, this plugin will have options to load in data from both to help make the weather more accurate.
 
 From FC it makes use of:
 - Current Date
@@ -20,7 +20,7 @@ From FC it makes use of:
 - Locations
 
 ## Roadmap
-Below you can see the nodes I will attempt to cover throughout the plugins development.
+Below you can see the elements I will attempt to cover throughout the plugins development.
 
 - Core: Generate weather based on seasonal and location data from fantasy-calendar.com
 - Generate weather through markdown code block

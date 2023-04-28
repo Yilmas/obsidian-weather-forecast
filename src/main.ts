@@ -12,6 +12,8 @@ import { WeatherGeneratorSettingTab } from './settings/index';
 // 	}
 // }
 
+let wgDebug = false;
+
 export default class WeatherGenerator extends Plugin {
 	private data: Record<string, boolean | string | WeatherGeneratorSettings>;
 
@@ -21,17 +23,18 @@ export default class WeatherGenerator extends Plugin {
 
 		this.app.workspace.onLayoutReady(async () => {
 			await this.loadWeatherGeneratorData();
+			if(wgDebug) console.log('Debug Mode enabled for Weather Generator');
 
-			console.log("Is FC enabled and loaded: " + this.hasFantasyCalendar);
+			if(wgDebug) console.log("Is FC enabled and loaded: " + this.hasFantasyCalendar);
 
 			this.addSettingTab(new WeatherGeneratorSettingTab(this.app, this));
 
 			this.registerMarkdownPostProcessor(
 				async (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-					console.log("Markdown Processor Started");
+					if(wgDebug) console.log("Markdown Processor Started");
 
 					let nodeList = el.querySelectorAll("code");
-					console.log(nodeList);
+					if(wgDebug) console.log(nodeList);
 
 					if (!nodeList.length) return;
 
@@ -48,8 +51,7 @@ export default class WeatherGenerator extends Plugin {
 					for (let i = 0; i < nodeList.length; i++) {
 						const node = nodeList[i];
 
-						console.log("Iterating nodes, this is node: " + i + " out of: " + nodeList.length);
-						console.log(node);
+						if(wgDebug) console.log(node);
 
 						if (/weather-gen:/.test(node.innerText) && info) {
 							try {
@@ -96,7 +98,7 @@ export default class WeatherGenerator extends Plugin {
 										wgDataTemp.wgSeason = this.getSettings().fantasyCalendarSeasons[postIndex].wgSeason;
 									}
 									else {
-										new Notice("You must define a season using --season or make use of Fantasy Calendar");
+										new Notice("You must define a season using --season or setup Fantasy Calendar in this plugins settings");
 									}
 								}
 
@@ -115,7 +117,7 @@ export default class WeatherGenerator extends Plugin {
 										break;
 									default:
 										//new Notice("Season not recognized!")
-										console.log("Season not recognized!")
+										console.warn("Season not recognized!")
 										break;
 								}
 
@@ -156,7 +158,7 @@ export default class WeatherGenerator extends Plugin {
 							}
 						}
 					}
-					console.log("Markdown Processor Ended");
+					if(wgDebug) console.log("Markdown Processor Ended");
 				}
 			)
 		});
@@ -198,22 +200,22 @@ export default class WeatherGenerator extends Plugin {
 
 	computeWinterWeatherData() {
 		// Generate weather data for Winter
-		console.log("Generating weather data for: \"Winter\"");
+		if(wgDebug) console.log("Generating weather data for: \"Winter\"");
 	}
 
 	computeSpringWeatherData() {
 		// Generate weather data for Spring
-		console.log("Generating weather data for: \"Spring\"");
+		if(wgDebug) console.log("Generating weather data for: \"Spring\"");
 	}
 
 	computeSummerWeatherData() {
 		// Generate weather data for Summer
-		console.log("Generating weather data for: \"Summer\"");
+		if(wgDebug) console.log("Generating weather data for: \"Summer\"");
 	}
 
 	computeFallWeatherData() {
 		// Generate weather data for Fall
-		console.log("Generating weather data for: \"Fall\"");
+		if(wgDebug) console.log("Generating weather data for: \"Fall\"");
 	}
 
 	onunload() {
@@ -234,9 +236,11 @@ export default class WeatherGenerator extends Plugin {
 			});
 		}
 		this.data = Object.assign({ settings: { ...DEFAULT_SETTINGS } }, {}, data);
+		wgDebug = this.getSettings().wgDebug;
 	}
 
 	async saveWeatherGeneratorData(): Promise<void> {
 		await this.saveData(this.data);
+		wgDebug = this.getSettings().wgDebug;
 	}
 }

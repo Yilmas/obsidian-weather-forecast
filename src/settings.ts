@@ -13,12 +13,14 @@ export interface WeatherGeneratorSettings {
 	fantasyCalendarJson: I_fcJson | undefined;
 	fantasyCalendarSeasons: Array<I_SeasonMatch>;
 	wgShowFormula: boolean;
+	wgDebug: boolean;
 }
 
 export const DEFAULT_SETTINGS: WeatherGeneratorSettings = {
 	fantasyCalendarJson: undefined,
 	fantasyCalendarSeasons: [],
-	wgShowFormula: false
+	wgShowFormula: false,
+	wgDebug: false
 }
 
 export const wgData = {
