@@ -1,22 +1,11 @@
 import { App, Editor, EventRef, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, TFile } from 'obsidian';
-import { DEFAULT_SETTINGS, WeatherGeneratorSettings, wgData } from './settings';
+import { DEFAULT_SETTINGS, WeatherGeneratorSettings, wgData, WeatherData } from './settings';
 import { WeatherGeneratorSettingTab } from './settings/index';
-
-// declare module "obsidian" {
-// 	interface Workspace {
-// 		trigger(name: "fantasy-calendars-settings-loaded"): void;
-// 		on(
-// 			name: "fantasy-calendars-settings-loaded",
-// 			callback: () => any
-// 		): EventRef;
-// 	}
-// }
 
 let wgDebug = false;
 
 export default class WeatherGenerator extends Plugin {
 	private data: Record<string, boolean | string | WeatherGeneratorSettings>;
-
 
 	async onload() {
 		console.log(`Weather Generator v${this.manifest.version} loaded.`);
@@ -29,141 +18,37 @@ export default class WeatherGenerator extends Plugin {
 
 			this.addSettingTab(new WeatherGeneratorSettingTab(this.app, this));
 
-			this.registerMarkdownPostProcessor(
-				async (el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-					if(wgDebug) console.log("Markdown Processor Started");
+			this.registerMarkdownCodeBlockProcessor("weather", (source, el) => {
+				try {					
+					const weatherData = this.parseWeatherData(source);
+					weatherData.season = this.setSeason(weatherData.season);
+					if(wgDebug) console.log(weatherData);
 
-					let nodeList = el.querySelectorAll("code");
-					if(wgDebug) console.log(nodeList);
-
-					if (!nodeList.length) return;
-
-					const path = ctx.sourcePath;
-					const info = ctx.getSectionInfo(el);
-					const lineStart = ctx.getSectionInfo(el)?.lineStart;
-					const file = this.app.vault.getAbstractFileByPath(ctx.sourcePath);
-
-					if (!file || !(file instanceof TFile)) return;
-
-					let fileContent: string[];
-					let weatherFound: boolean = false;
-
-					for (let i = 0; i < nodeList.length; i++) {
-						const node = nodeList[i];
-
-						if(wgDebug) console.log(node);
-
-						if (/weather-gen:/.test(node.innerText) && info) {
-							try {
-								const wgDataTemp = {
-									wgSeason: "",
-									fcSeason: "",
-									day: {
-										weather: "",
-										wind: "",
-										temp: "",
-										tempreg: ""
-									},
-									night: {
-										weather: "",
-										wind: "",
-										temp: "",
-										tempreg: ""
-									}
-								};
-
-								const weatherArgs = node.innerText.split('--');
-
-								for (let index = 0; index < weatherArgs.length; index++) {
-									const arg = weatherArgs[index];
-									const item = arg.match(/(\w+)\s(.*)/);
-
-									if(!item) continue;
-
-									if(item[1] === "season") wgDataTemp.wgSeason = item[2].trimEnd();
-									else if (item[1] === "weather") wgDataTemp.day.weather = item[2].trimEnd();
-									else if (item[1] === "wind") wgDataTemp.day.wind = item[2].trimEnd();
-									else if (item[1] === "temp") wgDataTemp.day.temp = item[2].trimEnd();
-									else if (item[1] === "tempreg") wgDataTemp.day.tempreg = item[2].trimEnd();
-									else if (item[1] === "nweather") wgDataTemp.night.weather = item[2].trimEnd();
-									else if (item[1] === "nwind") wgDataTemp.night.wind = item[2].trimEnd();
-									else if (item[1] === "ntemp") wgDataTemp.night.temp = item[2].trimEnd();
-									else if (item[1] === "ntempreg") wgDataTemp.night.tempreg = item[2].trimEnd();
-								}
-								
-								if(!wgDataTemp.wgSeason) {
-									if (this.hasFantasyCalendar) {
-										wgDataTemp.fcSeason = this.getCurrentSeason().name;
-										const postIndex = this.getSettings().fantasyCalendarSeasons.findIndex(x => x.fcSeason == wgDataTemp.fcSeason);
-										wgDataTemp.wgSeason = this.getSettings().fantasyCalendarSeasons[postIndex].wgSeason;
-									}
-									else {
-										new Notice("You must define a season using --season or setup Fantasy Calendar in this plugins settings");
-									}
-								}
-
-								switch(wgDataTemp.wgSeason) {
-									case "wgWinter":
-										this.computeWinterWeatherData();
-										break;
-									case "wgSpring":
-										this.computeSpringWeatherData();
-										break;
-									case "wgSummer":
-										this.computeSummerWeatherData();
-										break;
-									case "wgFall":
-										this.computeFallWeatherData();
-										break;
-									default:
-										//new Notice("Season not recognized!")
-										console.warn("Season not recognized!")
-										break;
-								}
-
-								if(!wgDataTemp.day.weather) {
-									// generate weather, based on season if available
-								}
-
-								if(!wgDataTemp.day.wind) {
-									// generate wind, based on weather and then season if available
-								}
-
-								if(!wgDataTemp.day.temp) {
-									// generate temp, based on weather then wind then season if available
-								}
-								
-								if(!wgDataTemp.day.tempreg) {
-									// generate tempreg, based on temp and season/location temp_low and temp_high if available
-								}
-								
-								if(!wgDataTemp.night.weather) {
-									// generate weather, based on season if available
-								}
-								
-								if(!wgDataTemp.night.wind) {
-									// generate wind, based on wind and then season if available
-								}
-								
-								if(!wgDataTemp.night.temp) {
-									// generate temp, based on weather then wind then season if available
-								}
-								
-								if(!wgDataTemp.night.tempreg) {
-									// generate tempreg, based on temp and season/location temp_low and temp_high if available
-								}
-
-							} catch (ex) {
-								console.error(ex);
-							}
-						}
+					switch(weatherData.season) {
+						case "wgWinter":
+							this.computeWinterWeatherData(weatherData);
+							break;
+						case "wgSpring":
+							this.computeSpringWeatherData(weatherData);
+							break;
+						case "wgSummer":
+							this.computeSummerWeatherData(weatherData);
+							break;
+						case "wgFall":
+							this.computeFallWeatherData(weatherData);
+							break;
+						default:
+							new Notice("Season not recognized!")
+							break;
 					}
-					if(wgDebug) console.log("Markdown Processor Ended");
-				}
-			)
-		});
 
-		
+					el.createDiv("asd").appendText("this is a text "+this.parseTemperature("25"));
+					el.createDiv("asd").appendText("this is a text "+this.parseTemperature(35));
+				} catch (error) {
+					console.error(error);
+				}
+			})
+		});		
 	}
 
 	get hasFantasyCalendar() {
@@ -198,24 +83,93 @@ export default class WeatherGenerator extends Plugin {
 		return currentSeason;
 	}
 
-	computeWinterWeatherData() {
+	parseWeatherData(source: string): WeatherData {
+		const [weatherPart, autoPart] = source.split("\n");
+		const weatherData: Partial<WeatherData> = {};
+
+		weatherPart.split(/(--.+?\s)/).forEach((part, i, arr) => {
+			if (part.startsWith("--")) {
+				const key = part.trim().slice(2) as keyof WeatherData;
+				const nextPart = arr[i + 1].trim();
+				if (nextPart && !nextPart.startsWith("--")) {
+					(weatherData[key] as string | number) = isNaN(Number(nextPart)) ? nextPart : Number(nextPart);
+				}
+			}
+		});
+
+		return { ...weatherData } as WeatherData;
+	}
+
+	setSeason(season: string) {
+		if(!season) {
+			if (this.hasFantasyCalendar) {
+				const fcSeason = this.getCurrentSeason().name;
+				const postIndex = this.getSettings().fantasyCalendarSeasons.findIndex(x => x.fcSeason == fcSeason);
+				season = this.getSettings().fantasyCalendarSeasons[postIndex].wgSeason;
+			}
+			else {
+				new Notice("You must define a season using --season or setup Fantasy Calendar in this plugins settings");
+			}
+		}
+
+		return season;
+	}
+
+	computeWinterWeatherData(weatherData: WeatherData) {
 		// Generate weather data for Winter
 		if(wgDebug) console.log("Generating weather data for: \"Winter\"");
 	}
 
-	computeSpringWeatherData() {
+	computeSpringWeatherData(weatherData: WeatherData) {
 		// Generate weather data for Spring
 		if(wgDebug) console.log("Generating weather data for: \"Spring\"");
+		const allPropsHasValue = Object.values(weatherData).every(x => x !== null && x !== undefined && x !== "");
+		if(allPropsHasValue) return weatherData;
+		else console.log("no data, value of ntempreg:" + weatherData.ntempreg);
 	}
 
-	computeSummerWeatherData() {
+	computeSummerWeatherData(weatherData: WeatherData) {
 		// Generate weather data for Summer
 		if(wgDebug) console.log("Generating weather data for: \"Summer\"");
 	}
 
-	computeFallWeatherData() {
+	computeFallWeatherData(weatherData: WeatherData) {
 		// Generate weather data for Fall
 		if(wgDebug) console.log("Generating weather data for: \"Fall\"");
+	}
+
+	generateWeather(weatherData: WeatherData) {
+		if(!weatherData.weather) {
+			// generate weather, based on season if available
+		}
+
+		if(!weatherData.wind) {
+			// generate wind, based on weather and then season if available
+		}
+
+		if(!weatherData.temp) {
+			// generate temp, based on weather then wind then season if available
+		}
+		
+		if(!weatherData.tempreg) {
+			// generate tempreg, based on temp and season/location temp_low and temp_high if available
+		}
+		
+		if(!weatherData.nweather) {
+			// generate weather, based on season if available
+		}
+		
+		if(!weatherData.nwind) {
+			// generate wind, based on wind and then season if available
+		}
+		
+		if(!weatherData.ntemp) {
+			// generate temp, based on weather then wind then season if available
+		}
+		
+		if(!weatherData.ntempreg) {
+			// generate tempreg, based on temp and season/location temp_low and temp_high if available
+		}
 	}
 
 	onunload() {
@@ -243,4 +197,41 @@ export default class WeatherGenerator extends Plugin {
 		await this.saveData(this.data);
 		wgDebug = this.getSettings().wgDebug;
 	}
+
+	parseTemperature(source: string | number) {
+		if(!this.getSettings()) console.error("Settings are not loaded");
+		const tempSetting = this.getSettings().wgTemperature;
+
+		if (typeof source === 'string' || typeof source === 'number') {
+			const temperature = typeof source === 'string' ? parseFloat(source) : source;
+			const convertedTemperature = tempSetting === 'f' ? temperature.celsiusToFahrenheit() : temperature;
+			const unit = tempSetting === 'f' ? '°F' : '°C';
+			return `${convertedTemperature}${unit}`;
+		} else {
+			console.error('Source is not a valid string or number!');
+		}
+	}
 }
+
+declare global {
+	interface String {
+	  	celsiusToFahrenheit(): string;
+	}
+	interface Number {
+		celsiusToFahrenheit(): number;
+	}
+}
+  
+String.prototype.celsiusToFahrenheit = function (): string {
+	const celsius = parseFloat(this);
+	if (isNaN(celsius)) {
+	  	return "Invalid temperature";
+	}
+	return celsius.celsiusToFahrenheit().toFixed(0);
+};
+Number.prototype.celsiusToFahrenheit = function (): number {
+	const celsius = this;
+	const fahrenheit = (celsius * 9/5) + 32;
+	return fahrenheit;
+};
+  
