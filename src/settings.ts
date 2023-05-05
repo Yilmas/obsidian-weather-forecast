@@ -27,31 +27,31 @@ export const DEFAULT_SETTINGS: WeatherGeneratorSettings = {
 	wgDebug: false
 }
 
-export interface WeatherData {
-	season: string;
-	weather: string;
-	wind: string;
-	temp: number;
-	tempreg: number;
-	nweather: string;
-	nwind: string;
-	ntemp: number;
-	ntempreg: number;
-  }
+// export interface WeatherData {
+// 	season: string;
+// 	weather: string;
+// 	wind: string;
+// 	temp: number;
+// 	tempreg: number;
+// 	nweather: string;
+// 	nwind: string;
+// 	ntemp: number;
+// 	ntempreg: number;
+// }
 
-export const wgData = {
-	wgSeason: "",
-	fcSeason: "",
-	day: {
-		weather: "",
-		wind: "",
-		temp: "",
-		tempreg: ""
-	},
-	night: {
-		weather: "",
-		wind: "",
-		temp: "",
-		tempreg: ""
-	}
-}
+// export const wgData = {
+// 	wgSeason: "",
+// 	fcSeason: "",
+// 	day: {
+// 		weather: "",
+// 		wind: "",
+// 		temp: "",
+// 		tempreg: ""
+// 	},
+// 	night: {
+// 		weather: "",
+// 		wind: "",
+// 		temp: "",
+// 		tempreg: ""
+// 	}
+// }
