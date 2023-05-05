@@ -26,13 +26,13 @@ If your plugin does not need CSS, delete this file.
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 15px 10px;
+    padding: 15px 0px;
 }
 
 .wf-current-day {
     display: flex;
     flex-direction: column;
-    padding-right: 20px;
+    padding-left: 10px;
 }
 
 .wf-current-day-season {
@@ -54,6 +54,13 @@ If your plugin does not need CSS, delete this file.
     font-weight: bold;
 }
 
+.wf-current-day-ntemp {
+    color: var(--text-muted);
+    font-size: x-large;
+    padding-top: 3px;
+    padding-left: 5px;
+}
+
 .wf-current-day-temp-desc {
     color:var(--text-muted);
 }
@@ -62,13 +69,32 @@ If your plugin does not need CSS, delete this file.
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 50px;
+}
+
+.wf-current-night {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-muted);
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-primary-alt);
+    padding: 10px;
+}
+
+.wf-current-night-details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .wf-current-readings {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding-left: 50px;
+    justify-content: space-between;
+}
+
+.wf-current-readings-panel {
+    padding-left: 10px;
 }
 
 .wf-bulletin {
@@ -116,10 +142,63 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-faint);
 }
 
+.wf-wind {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.wf-compact {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px 15px;
+}
+
+.wf-compact-desc {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-right: 10px;
+}
+
+.wf-compact-desc-season {
+    font-size: medium;
+}
+
+.wf-compact-desc-date {
+    
+}
+
+.wf-compact-desc-name {
+    font-size: larger;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.wf-compact-day {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding:0 20px;
+}
+
+.wf-compact-night {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .wf-weather-icon-description {
     display: flex;
     justify-content: center;
     color: var(--text-muted);
+}
+
+.wf-weather-icon-large {
+    margin-top: 15px;
 }
 
 .wf-weather-icon-large svg {
@@ -127,7 +206,21 @@ If your plugin does not need CSS, delete this file.
     --icon-size: 128px;
 }
 
+.wf-weather-icon-medium svg {
+    color: var(--h1-color);
+    --icon-size:64px;
+}
+
 .wf-weather-icon-small svg {
     color: var(--h2-color);
-    --icon-size:64px;
+    --icon-size:32px;
+}
+
+.wf-compact-title {
+    color: var(--text-muted);
+    padding-bottom: 5px;
+}
+
+.wf-bold {
+    font-weight: bold;
 }

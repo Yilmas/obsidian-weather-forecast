@@ -11,3 +11,123 @@ If your plugin does not need CSS, delete this file.
     margin-left: 15px;
     margin-top: 10px;
 }
+
+.wf-container {
+    display: flex;
+    flex-direction: column;
+    width:fit-content;
+    border:1px solid var(--background-modifier-border);
+    background-color: var(--background-primary-alt);
+    padding: 5px;
+    color: var(--text-normal);
+}
+
+.wf-current {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 15px 10px;
+}
+
+.wf-current-day {
+    display: flex;
+    flex-direction: column;
+    padding-right: 20px;
+}
+
+.wf-current-day-season {
+    font-size: x-large;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.wf-current-day-date {
+    
+}
+
+.wf-current-day-name {
+    margin-bottom: 20px;
+}
+
+.wf-current-day-temp {
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.wf-current-day-temp-desc {
+    color:var(--text-muted);
+}
+
+.wf-current-weather {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wf-current-readings {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-left: 50px;
+}
+
+.wf-bulletin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 3px;
+}
+.wf-bulletin div {
+    padding-left: 5px;
+}
+
+.wf-bulletin-large {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 3px;
+}
+
+.wf-bulletin-large svg {
+    color: var(--h1-color);
+    --icon-size: 32px;
+}
+
+.wf-week {
+    display: flex;
+    flex-direction: row;
+    /*flex-flow: row wrap;*/
+    justify-content: space-evenly;
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-primary-alt);
+    padding: 10px 10px;
+}
+
+.wf-day {
+    display: flex;
+    width:fit-content;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 10px;
+}
+
+.wf-date {
+    font-weight: bold;
+    color: var(--text-faint);
+}
+
+.wf-weather-icon-description {
+    display: flex;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.wf-weather-icon-large svg {
+    color: var(--h1-color);
+    --icon-size: 128px;
+}
+
+.wf-weather-icon-small svg {
+    color: var(--h2-color);
+    --icon-size:64px;
+}

@@ -4,6 +4,17 @@ Spiritual continuation of: https://github.com/Syrkres/templates/tree/main/Weathe
 This plugin will allow the user to create a markdown populated with weather data.
 The user will provide the plugin with as much data as they want, and the plugin will compute anything missing, within the parameters of the supplied data.
 
+## Block Configuration
+A weather forecast can be generated with:
+``
+```forecast
+weather-gen: --season Spring ...
+view: compact
+```
+``
+
+There are currently two primary views: "Compact" and "Detail". Each have an addon called "Week". If both are set, or neither, it will default to "Detail".  
+
 ## Settings
 - **Debug Mode:** Will enable console logs of most things that occur in the plugin.
 - **[WIP] Keep Formula:** When you enter the "Reading Mode" the plugin would normally strip the formula to save performance. However, it comes with the downside of not being able to generate a new forecast should you dislike what it generated. By enabling this field, you keep any parameters you entered originally.
@@ -13,7 +24,7 @@ The user will provide the plugin with as much data as they want, and the plugin 
     - **Temperate:** "Europe". More rain starts to occur, and longer summers.
     - **Dry:** Rain becomes rare, the temperature raises and the humidity falls. Winds can often be brutal in these areas.
     - **Tropical:** Rain becomes heavy, the humidity is high, but it is generally not too windy.
-- **FC Seasons:** You can load in the json that FC used to parse, to load seasonal data. This option will be expanded further down the line.
+- **FC Seasons:** You can load the json that FC used to parse, to get seasonal data. This option will be expanded further down the line.
 
 ## Optional Plugins
 Below you can see the plugins I recommend to get the full experience of this plugin.
@@ -42,3 +53,4 @@ Note: The order is not a true representation of development.
 - Generate a week of forecast for the weather, any day used within this forecast will make use of the forecast as part of the randomness
 - Allow weather to be placed within infoboxes and similar (`> weather`)
 - Offload weather computations to "The Cloud", to allow for more advance forecast algorithms.
+- Lucide doesn't have icons for moon phases, will need something else for that.
