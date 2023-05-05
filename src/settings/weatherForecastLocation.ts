@@ -1,13 +1,13 @@
 import { Notice, Setting, TextComponent } from 'obsidian';
-import WeatherCalendarSetting from './weatherGeneratorSetting';
+import WeatherCalendarSetting from './weatherForecastSetting';
 
-export default class WeatherGeneratorLocationSetting extends WeatherCalendarSetting {
-    private wgLocationSettingTextComp: TextComponent;
+export default class WeatherForecastLocationSetting extends WeatherCalendarSetting {
+    private wfLocationSettingTextComp: TextComponent;
 
     public display(): void {
-        const wgLocation = this.plugin.getSettings().wgLocation;
+        const wfLocation = this.plugin.getSettings().wfLocation;
 
-        const wgLocationSetting = new Setting(this.containerEl)
+        const wfLocationSetting = new Setting(this.containerEl)
             .setName('Location')
             .setDesc('What climate should the weather be based on?')
             .addDropdown((d) => {
@@ -16,11 +16,11 @@ export default class WeatherGeneratorLocationSetting extends WeatherCalendarSett
                 d.addOption("Temperate", "Temperate");
                 d.addOption("Dry", "Dry");
                 d.addOption("Tropical", "Tropical");
-                d.setValue(wgLocation);
+                d.setValue(wfLocation);
                 d.onChange(async (v) => {
-                    this.plugin.getSettings().wgLocation = v;
+                    this.plugin.getSettings().wfLocation = v;
                     
-                    await this.plugin.saveWeatherGeneratorData();
+                    await this.plugin.saveWeatherForecastData();
                 });
             });
     }

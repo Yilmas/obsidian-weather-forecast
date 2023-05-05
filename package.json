@@ -1,5 +1,5 @@
 {
-	"name": "obsidian-weather-generator",
+	"name": "obsidian-weather-forecast",
 	"version": "0.0.1",
 	"description": "Add random generated weather markdown.",
 	"main": "main.js",

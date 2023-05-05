@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
-import { WeatherGeneratorSettings } from "settings";
+import { WeatherForecastSettings } from "settings";
 
-let wgDebug = false;
+let wfDebug = false;
 
 export class DailyForecast {
     season: string;
@@ -16,34 +16,34 @@ export class DailyForecast {
 	ntemp: number;
 	ntempreg: number;
 
-	settings: WeatherGeneratorSettings;
+	settings: WeatherForecastSettings;
 	hasFC: boolean;
 
 	displayCompact: boolean;
 	displayDetail: boolean = true;
 	displayWeek: boolean;
 
-	constructor(source: string, wgSettings: WeatherGeneratorSettings, fc: boolean) {
-		this.settings = wgSettings;
-		wgDebug = this.settings.wgDebug;
+	constructor(source: string, wfSettings: WeatherForecastSettings, fc: boolean) {
+		this.settings = wfSettings;
+		wfDebug = this.settings.wfDebug;
 		this.hasFC = fc;
 		this.parseWeatherData(source);
 					
-		if(wgDebug) console.log(this);
+		if(wfDebug) console.log(this);
 
 		if([this.season, this.weather, this.wind, this.temp, this.tempreg, this.nweather, this.nwind, this.ntemp,this.ntempreg]
 			.every(prop => prop !== undefined || prop !== null)) {
 			switch(this.season) {
-				case "wgWinter":
+				case "wfWinter":
 					this.computeWinterWeatherData(this);
 					break;
-				case "wgSpring":
+				case "wfSpring":
 					this.computeSpringWeatherData(this);
 					break;
-				case "wgSummer":
+				case "wfSummer":
 					this.computeSummerWeatherData(this);
 					break;
-				case "wgFall":
+				case "wfFall":
 					this.computeFallWeatherData(this);
 					break;
 				default:
@@ -109,8 +109,8 @@ export class DailyForecast {
 			return this.fcSeason;
 		}
 		else {
-			if(this.season.startsWith('wg')) {
-				return this.season.replace('wg', '');
+			if(this.season.startsWith('wf')) {
+				return this.season.replace('wf', '');
 			}
 			return this.season;
 		}
@@ -143,7 +143,7 @@ export class DailyForecast {
 			if (this.hasFC) {
 				this.fcSeason = this.getCurrentSeason().name;
 				this.fcSeasonIndex = this.settings.fantasyCalendarSeasons.findIndex(x => x.fcSeason == this.fcSeason);
-				this.season = this.settings.fantasyCalendarSeasons[this.fcSeasonIndex].wgSeason;
+				this.season = this.settings.fantasyCalendarSeasons[this.fcSeasonIndex].wfSeason;
 			}
 		}
 		else {
@@ -153,12 +153,12 @@ export class DailyForecast {
 
 	computeWinterWeatherData(data: DailyForecast) {
 		// Generate weather data for Winter
-		if(wgDebug) console.log("Generating weather data for: \"Winter\"");
+		if(wfDebug) console.log("Generating weather data for: \"Winter\"");
 	}
 
 	computeSpringWeatherData(data: DailyForecast) {
 		// Generate weather data for Spring
-		if(wgDebug) console.log("Generating weather data for: \"Spring\"");
+		if(wfDebug) console.log("Generating weather data for: \"Spring\"");
 		const allPropsHasValue = Object.values(data).every(x => x !== null && x !== undefined && x !== "");
 		if(allPropsHasValue) return data;
 		else console.log("no data, value of ntempreg:" + data.ntempreg);
@@ -166,12 +166,12 @@ export class DailyForecast {
 
 	computeSummerWeatherData(data: DailyForecast) {
 		// Generate weather data for Summer
-		if(wgDebug) console.log("Generating weather data for: \"Summer\"");
+		if(wfDebug) console.log("Generating weather data for: \"Summer\"");
 	}
 
 	computeFallWeatherData(data: DailyForecast) {
 		// Generate weather data for Fall
-		if(wgDebug) console.log("Generating weather data for: \"Fall\"");
+		if(wfDebug) console.log("Generating weather data for: \"Fall\"");
 	}
 
 	generateWeather(data: DailyForecast) {

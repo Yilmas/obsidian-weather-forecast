@@ -12,7 +12,7 @@ If your plugin does not need CSS, delete this file.
     margin-top: 10px;
 }
 
-.wg-container {
+.wf-container {
     display: flex;
     flex-direction: column;
     width:fit-content;
@@ -22,78 +22,78 @@ If your plugin does not need CSS, delete this file.
     color: var(--text-normal);
 }
 
-.wg-current {
+.wf-current {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 15px 10px;
 }
 
-.wg-current-day {
+.wf-current-day {
     display: flex;
     flex-direction: column;
     padding-right: 20px;
 }
 
-.wg-current-day-season {
+.wf-current-day-season {
     font-size: x-large;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-.wg-current-day-date {
+.wf-current-day-date {
     
 }
 
-.wg-current-day-name {
+.wf-current-day-name {
     margin-bottom: 20px;
 }
 
-.wg-current-day-temp {
+.wf-current-day-temp {
     font-size: xx-large;
     font-weight: bold;
 }
 
-.wg-current-day-temp-desc {
+.wf-current-day-temp-desc {
     color:var(--text-muted);
 }
 
-.wg-current-weather {
+.wf-current-weather {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.wg-current-readings {
+.wf-current-readings {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding-left: 50px;
 }
 
-.wg-bulletin {
+.wf-bulletin {
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-top: 3px;
 }
-.wg-bulletin div {
+.wf-bulletin div {
     padding-left: 5px;
 }
 
-.wg-bulletin-large {
+.wf-bulletin-large {
     display: flex;
     flex-direction: row;
     align-items: center;
     padding-top: 3px;
 }
 
-.wg-bulletin-large svg {
+.wf-bulletin-large svg {
     color: var(--h1-color);
     --icon-size: 32px;
 }
 
-.wg-week {
+.wf-week {
     display: flex;
     flex-direction: row;
     /*flex-flow: row wrap;*/
@@ -103,7 +103,7 @@ If your plugin does not need CSS, delete this file.
     padding: 10px 10px;
 }
 
-.wg-day {
+.wf-day {
     display: flex;
     width:fit-content;
     flex-direction: column;
@@ -111,23 +111,23 @@ If your plugin does not need CSS, delete this file.
     padding: 3px 10px;
 }
 
-.wg-date {
+.wf-date {
     font-weight: bold;
     color: var(--text-faint);
 }
 
-.wg-weather-icon-description {
+.wf-weather-icon-description {
     display: flex;
     justify-content: center;
     color: var(--text-muted);
 }
 
-.wg-weather-icon-large svg {
+.wf-weather-icon-large svg {
     color: var(--h1-color);
     --icon-size: 128px;
 }
 
-.wg-weather-icon-small svg {
+.wf-weather-icon-small svg {
     color: var(--h2-color);
     --icon-size:64px;
 }

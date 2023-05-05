@@ -1,6 +1,6 @@
 import { Notice, Setting, TextComponent } from 'obsidian';
 import { I_SeasonMatch } from 'settings';
-import WeatherCalendarSetting from './weatherGeneratorSetting';
+import WeatherCalendarSetting from './weatherForecastSetting';
 
 export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSetting {
     private fcJsonPathSettingTextComp: TextComponent;
@@ -39,7 +39,7 @@ export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSett
                     for (let i = 0; i < seasons.data.length; i++) {
                         const season: I_SeasonMatch = {
                             fcSeason: seasons.data[i].name,
-                            wgSeason: ""
+                            wfSeason: ""
                         };
 
                         this.plugin.getSettings().fantasyCalendarSeasons?.push(season);
@@ -47,7 +47,7 @@ export default class FantasyCalendarJsonParseSetting extends WeatherCalendarSett
 
                     new Notice('...parsed successfully');
 
-                    await this.plugin.saveWeatherGeneratorData();
+                    await this.plugin.saveWeatherForecastData();
 
                     new Notice('Saved changes')
                 } catch (e) {

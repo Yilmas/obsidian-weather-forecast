@@ -1,5 +1,5 @@
 import { Notice, Setting, TextComponent } from 'obsidian';
-import WeatherCalendarSetting from './weatherGeneratorSetting';
+import WeatherCalendarSetting from './weatherForecastSetting';
 
 export default class FantasyCalendarSeasonSetting extends WeatherCalendarSetting {
     private fcSeasonSettingTextComp: TextComponent;
@@ -23,16 +23,16 @@ export default class FantasyCalendarSeasonSetting extends WeatherCalendarSetting
                 .setDesc('What does this season most commonly resemble?')
                 .addDropdown((d) => {
                     d.addOption("none", "Please select a default");
-                    d.addOption("wgSpring", "Spring");
-                    d.addOption("wgSummer", "Summer");
-                    d.addOption("wgFall", "Fall / Autumn");
-                    d.addOption("wgWinter", "Winter");
-                    d.setValue(this.plugin.getSettings().fantasyCalendarSeasons[preIndex].wgSeason);
+                    d.addOption("wfSpring", "Spring");
+                    d.addOption("wfSummer", "Summer");
+                    d.addOption("wfFall", "Fall / Autumn");
+                    d.addOption("wfWinter", "Winter");
+                    d.setValue(this.plugin.getSettings().fantasyCalendarSeasons[preIndex].wfSeason);
                     d.onChange(async (v) => {
                         const postIndex = this.plugin.getSettings().fantasyCalendarSeasons.findIndex(x => x.fcSeason == fcSeason.name);
-                        this.plugin.getSettings().fantasyCalendarSeasons[postIndex].wgSeason = v;
+                        this.plugin.getSettings().fantasyCalendarSeasons[postIndex].wfSeason = v;
                         
-                        await this.plugin.saveWeatherGeneratorData();
+                        await this.plugin.saveWeatherForecastData();
                     });
                 });
         }

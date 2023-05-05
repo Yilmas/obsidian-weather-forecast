@@ -1,16 +1,16 @@
 import { App, PluginSettingTab } from 'obsidian';
-import WeatherGenerator from '../main';
-import WeatherGeneratorDebugSetting from './weatherGeneratorDebug';
-import WeatherGeneratorShowFormulaSetting from './weatherGeneratorShowFormula';
-import WeatherGeneratorLocationSetting from './weatherGeneratorLocation';
-import WeatherGeneratorTemperatureSetting from './weatherGeneratorTemperature';
+import WeatherForecast from '../main';
+import WeatherForecastDebugSetting from './weatherForecastDebug';
+import WeatherForecastShowFormulaSetting from './weatherForecastShowFormula';
+import WeatherForecastLocationSetting from './weatherForecastLocation';
+import WeatherForecastTemperatureSetting from './weatherForecastTemperature';
 import FantasyCalendarJsonParseSetting from './fantasyCalendarJsonParse';
 import FantasyCalendarSeasonSetting from './fantasyCalendarSeason';
 
-export class WeatherGeneratorSettingTab extends PluginSettingTab {
-	private plugin: WeatherGenerator;
+export class WeatherForecastSettingTab extends PluginSettingTab {
+	private plugin: WeatherForecast;
 
-	constructor(app: App, plugin: WeatherGenerator) {
+	constructor(app: App, plugin: WeatherForecast) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -19,11 +19,11 @@ export class WeatherGeneratorSettingTab extends PluginSettingTab {
         const { plugin, containerEl, app } = this;
         containerEl.empty();
 
-        containerEl.createEl('h3', {text: 'Weather Generator' });
-		new WeatherGeneratorDebugSetting(plugin, containerEl).display();
-		new WeatherGeneratorShowFormulaSetting(plugin, containerEl).display();
-		new WeatherGeneratorLocationSetting(plugin, containerEl).display();
-		new WeatherGeneratorTemperatureSetting(plugin, containerEl).display();
+        containerEl.createEl('h3', {text: 'Weather Forecast' });
+		new WeatherForecastDebugSetting(plugin, containerEl).display();
+		new WeatherForecastShowFormulaSetting(plugin, containerEl).display();
+		new WeatherForecastLocationSetting(plugin, containerEl).display();
+		new WeatherForecastTemperatureSetting(plugin, containerEl).display();
 
         containerEl.createEl('h2', {text: 'Fantasy Calendar' });
         new FantasyCalendarJsonParseSetting(plugin, containerEl).display();

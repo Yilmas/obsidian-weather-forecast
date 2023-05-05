@@ -6,52 +6,23 @@ export interface I_fcJson {
 
 export interface I_SeasonMatch {
 	fcSeason: string;
-	wgSeason: string;
+	wfSeason: string;
 }
 
-export interface WeatherGeneratorSettings {
+export interface WeatherForecastSettings {
 	fantasyCalendarJson: I_fcJson | undefined;
 	fantasyCalendarSeasons: Array<I_SeasonMatch>;
-	wgShowFormula: boolean;
-	wgLocation: string;
-	wgTemperature: string;
-	wgDebug: boolean;
+	wfShowFormula: boolean;
+	wfLocation: string;
+	wfTemperature: string;
+	wfDebug: boolean;
 }
 
-export const DEFAULT_SETTINGS: WeatherGeneratorSettings = {
+export const DEFAULT_SETTINGS: WeatherForecastSettings = {
 	fantasyCalendarJson: undefined,
 	fantasyCalendarSeasons: [],
-	wgShowFormula: false,
-	wgLocation: "Temperate",
-	wgTemperature: "c",
-	wgDebug: false
+	wfShowFormula: false,
+	wfLocation: "Temperate",
+	wfTemperature: "c",
+	wfDebug: false
 }
-
-// export interface WeatherData {
-// 	season: string;
-// 	weather: string;
-// 	wind: string;
-// 	temp: number;
-// 	tempreg: number;
-// 	nweather: string;
-// 	nwind: string;
-// 	ntemp: number;
-// 	ntempreg: number;
-// }
-
-// export const wgData = {
-// 	wgSeason: "",
-// 	fcSeason: "",
-// 	day: {
-// 		weather: "",
-// 		wind: "",
-// 		temp: "",
-// 		tempreg: ""
-// 	},
-// 	night: {
-// 		weather: "",
-// 		wind: "",
-// 		temp: "",
-// 		tempreg: ""
-// 	}
-// }

@@ -1,22 +1,22 @@
 import { App, Editor, EventRef, MarkdownPostProcessorContext, MarkdownView, Modal, Notice, Plugin, TFile, setIcon } from 'obsidian';
-import { DEFAULT_SETTINGS, WeatherGeneratorSettings } from './settings';
-import { WeatherGeneratorSettingTab } from './settings/index';
+import { DEFAULT_SETTINGS, WeatherForecastSettings } from './settings';
+import { WeatherForecastSettingTab } from './settings/index';
 import { DailyForecast } from 'DailyForecast';
 
-let wgDebug = false;
+let wfDebug = false;
 
-export default class WeatherGenerator extends Plugin {
-	private data: Record<string, boolean | string | WeatherGeneratorSettings>;
+export default class WeatherForecast extends Plugin {
+	private data: Record<string, boolean | string | WeatherForecastSettings>;
 
 	async onload() {
-		console.log(`Weather Generator v${this.manifest.version} loaded.`);
+		console.log(`Weather Forecast v${this.manifest.version} loaded.`);
 
 		this.app.workspace.onLayoutReady(async () => {
-			await this.loadWeatherGeneratorData();
-			if(wgDebug) console.log('Debug Mode enabled for Weather Generator');
-			if(wgDebug) console.log("Is FC enabled and loaded: " + this.hasFantasyCalendar);
+			await this.loadWeatherForecastData();
+			if(wfDebug) console.log('Debug Mode enabled for Weather Forecast');
+			if(wfDebug) console.log("Is FC enabled and loaded: " + this.hasFantasyCalendar);
 
-			this.addSettingTab(new WeatherGeneratorSettingTab(this.app, this));
+			this.addSettingTab(new WeatherForecastSettingTab(this.app, this));
 
 			this.registerMarkdownCodeBlockProcessor("weather", (source, el) => {
 				try {	
@@ -26,7 +26,7 @@ export default class WeatherGenerator extends Plugin {
 						this.hasFantasyCalendar
 					);
 					
-					const wgBox = el.createDiv("wg-container");
+					const wfBox = el.createDiv("wf-container");
 					
 					// Setup Compact View if displayCompact is true
 					if(forecast.displayCompact) {
@@ -36,66 +36,66 @@ export default class WeatherGenerator extends Plugin {
 					// Setup Detailed View if displayDetailed is true
 					if(forecast.displayDetail) {
 						// Setup current day
-						const wgCurrent = wgBox.createDiv("wg-current");
-						const wgCurrentDay = wgCurrent.createDiv("wg-current-day")
-						wgCurrentDay.createDiv("wg-current-day-season").appendText(forecast.toSeason());
-						wgCurrentDay.createDiv("wg-current-day-date").appendText("May 3");
-						wgCurrentDay.createDiv("wg-current-day-name").appendText("Wednesday");
+						const wfCurrent = wfBox.createDiv("wf-current");
+						const wfCurrentDay = wfCurrent.createDiv("wf-current-day")
+						wfCurrentDay.createDiv("wf-current-day-season").appendText(forecast.toSeason());
+						wfCurrentDay.createDiv("wf-current-day-date").appendText("May 3");
+						wfCurrentDay.createDiv("wf-current-day-name").appendText("Wednesday");
 
-						const wgCurrentDayTemp = wgCurrentDay.createDiv("wg-bulletin-large");
-						setIcon(wgCurrentDayTemp, "thermometer"); //thermometer-snowflake thermometer-sun
-						wgCurrentDayTemp.createDiv("wg-current-day-temp").appendText(this.parseTemperature(forecast.temp, false));
+						const wfCurrentDayTemp = wfCurrentDay.createDiv("wf-bulletin-large");
+						setIcon(wfCurrentDayTemp, "thermometer"); //thermometer-snowflake thermometer-sun
+						wfCurrentDayTemp.createDiv("wf-current-day-temp").appendText(this.parseTemperature(forecast.temp, false));
 						
-						wgCurrentDay.createDiv("wg-current-day-temp-desc").appendText("Warmer than normal");
+						wfCurrentDay.createDiv("wf-current-day-temp-desc").appendText("Warmer than normal");
 	
 						// Set the weather icon
-						const wgCurrentWeather = wgCurrent.createDiv("wg-current-weather");
-						const weatherIcon = wgCurrentWeather.createDiv("wg-weather-icon-large");
+						const wfCurrentWeather = wfCurrent.createDiv("wf-current-weather");
+						const weatherIcon = wfCurrentWeather.createDiv("wf-weather-icon-large");
 						if(forecast.weather === "foggy") setIcon(weatherIcon, "cloud-sun");
-						weatherIcon.createDiv("wg-weather-icon-description").appendText(forecast.weather.toLowerCase());
+						weatherIcon.createDiv("wf-weather-icon-description").appendText(forecast.weather.toLowerCase());
 	
 						// Define right sidebar
-						const wgCurrentReadings = wgCurrent.createDiv("wg-current-readings")
+						const wfCurrentReadings = wfCurrent.createDiv("wf-current-readings")
 	
-						const wgCurrentSunrise = wgCurrentReadings.createDiv("wg-bulletin");
-						setIcon(wgCurrentSunrise, "sunrise");
-						wgCurrentSunrise.createDiv().appendText("Sunrise 7:00");
+						const wfCurrentSunrise = wfCurrentReadings.createDiv("wf-bulletin");
+						setIcon(wfCurrentSunrise, "sunrise");
+						wfCurrentSunrise.createDiv().appendText("Sunrise 7:00");
 	
-						const wgCurrentSunset = wgCurrentReadings.createDiv("wg-bulletin");
-						setIcon(wgCurrentSunset, "sunset");
-						wgCurrentSunset.createDiv().appendText("Sunset 19:20");
+						const wfCurrentSunset = wfCurrentReadings.createDiv("wf-bulletin");
+						setIcon(wfCurrentSunset, "sunset");
+						wfCurrentSunset.createDiv().appendText("Sunset 19:20");
 	
-						const wgCurrentHumidity = wgCurrentReadings.createDiv("wg-bulletin");
-						setIcon(wgCurrentHumidity, "droplets");
-						wgCurrentHumidity.createDiv().appendText("60%");
+						const wfCurrentHumidity = wfCurrentReadings.createDiv("wf-bulletin");
+						setIcon(wfCurrentHumidity, "droplets");
+						wfCurrentHumidity.createDiv().appendText("60%");
 	
-						const wgCurrentWindSpeed = wgCurrentReadings.createDiv("wg-bulletin");
-						setIcon(wgCurrentWindSpeed, "wind");
-						wgCurrentWindSpeed.createDiv().appendText("10 m/s");
+						const wfCurrentWindSpeed = wfCurrentReadings.createDiv("wf-bulletin");
+						setIcon(wfCurrentWindSpeed, "wind");
+						wfCurrentWindSpeed.createDiv().appendText("10 m/s");
 	
-						const wgCurrentWindDirection = wgCurrentReadings.createDiv("wg-bulletin");
-						setIcon(wgCurrentWindDirection, "arrow-up-right");
-						wgCurrentWindDirection.createDiv().appendText("North-East");
+						const wfCurrentWindDirection = wfCurrentReadings.createDiv("wf-bulletin");
+						setIcon(wfCurrentWindDirection, "arrow-up-right");
+						wfCurrentWindDirection.createDiv().appendText("North-East");
 						
 						// Display Week, if displayWeek is true
 						if(forecast.displayWeek) {
 							// Setup week
-							const wgWeek = wgBox.createDiv("wg-week");
+							const wfWeek = wfBox.createDiv("wf-week");
 							for (let i = 0; i < 5; i++) {
-								const wgDay = wgWeek.createDiv("wg-day");
+								const wfDay = wfWeek.createDiv("wf-day");
 								// Set the day of the week
-								wgDay.createDiv("wg-date").appendText("dd/MM");
+								wfDay.createDiv("wf-date").appendText("dd/MM");
 		
 								// Set the weather icon
-								const weatherIconDay = wgDay.createDiv("wg-weather-icon-small");
+								const weatherIconDay = wfDay.createDiv("wf-weather-icon-small");
 								if(forecast.weather === "foggy") setIcon(weatherIconDay, "cloud-fog");
 		
 								// Set the temperature
-								const wgDayTemp = wgDay.createDiv("wg-day-temp");
-								wgDayTemp.createSpan().appendText(this.parseTemperature(forecast.temp))
+								const wfDayTemp = wfDay.createDiv("wf-day-temp");
+								wfDayTemp.createSpan().appendText(this.parseTemperature(forecast.temp))
 								
 								// Set the wind
-								wgDay.createDiv("wg-wind").appendText(forecast.wind);												
+								wfDay.createDiv("wf-wind").appendText(forecast.wind);												
 							}
 						}
 
@@ -119,14 +119,14 @@ export default class WeatherGenerator extends Plugin {
 	}
 
 	onunload() {
-		console.log("Weather Generator unloaded");
+		console.log("Weather Forecast unloaded");
 	}
 
-	public getSettings(): WeatherGeneratorSettings {
-		return this.data.settings as WeatherGeneratorSettings;
+	public getSettings(): WeatherForecastSettings {
+		return this.data.settings as WeatherForecastSettings;
 	}
 
-	async loadWeatherGeneratorData(): Promise<void> {
+	async loadWeatherForecastData(): Promise<void> {
 		const data = await this.loadData();
 		if (data) {
 			Object.entries(DEFAULT_SETTINGS).forEach(([k, v]) => {
@@ -136,17 +136,17 @@ export default class WeatherGenerator extends Plugin {
 			});
 		}
 		this.data = Object.assign({ settings: { ...DEFAULT_SETTINGS } }, {}, data);
-		wgDebug = this.getSettings().wgDebug;
+		wfDebug = this.getSettings().wfDebug;
 	}
 
-	async saveWeatherGeneratorData(): Promise<void> {
+	async saveWeatherForecastData(): Promise<void> {
 		await this.saveData(this.data);
-		wgDebug = this.getSettings().wgDebug;
+		wfDebug = this.getSettings().wfDebug;
 	}
 
 	parseTemperature(source: string | number, includeSign: boolean = true): string {
 		if(!this.getSettings()) console.error("Settings are not loaded");
-		const tempSetting = this.getSettings().wgTemperature;
+		const tempSetting = this.getSettings().wfTemperature;
 
 		if (typeof source === 'string' || typeof source === 'number') {
 			const temperature = typeof source === 'string' ? parseFloat(source) : source;
